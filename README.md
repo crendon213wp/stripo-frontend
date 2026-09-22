@@ -1,0 +1,192 @@
+# Stripo Framework
+
+This is a small app for working with the Stripo email editor.
+
+It does two useful things:
+
+- Starts the Stripo editor in your browser.
+- Creates a new project beside the `Master File` directory.
+- Saves project HTML and CSS so you can reopen the work later.
+
+The app needs Node.js, Stripo credentials, and a reliable internet connection. The internet connection matters because the editor and authentication service are hosted by Stripo.
+
+> **Important:** Create a [Stripo.email account](https://stripo.email/) before setting up this application. The app depends on Stripo authentication and will not work until you have an account.
+
+## Before you begin
+
+Install these first:
+
+- Node.js 18 or newer
+- npm
+- Git
+- A Stripo.email account
+- A Stripo Plugin ID
+- A Stripo Secret Key
+
+## Design system
+
+The single-page website uses a small typography system so each kind of content has a clear role:
+
+- **Space Grotesk** is the brand and display font. It is used for the logo, large section headings, and card headings.
+- **Merriweather** is the reading font. It is used for descriptive paragraphs and longer explanatory copy.
+- **Barlow** is the utility font. It is used for navigation, labels, buttons, metadata, numbers, and interface details.
+- **Montserrat** is included in the framework typography helpers as an available example font. It is not the primary font for the current single-page design, but it can be used for future components through the existing typography classes.
+
+The visual palette follows an acai-inspired triadic art direction:
+
+- **Acai purple `#4D2A60`** is the primary color for strong surfaces, headings, and the framework identity.
+- **Moss brown `#7A654C`** is the warm complement used for accents, labels, and supporting emphasis.
+- **Mint green `#A8D5BA`** is the fresh highlight used for setup areas, icons, status details, and contrast against the purple.
+
+Soft paper, cream, and lavender-gray neutrals support the triad so the page remains readable and the three main colors do not compete with one another.
+
+## 1. Download the project
+
+Clone the repository from GitHub:
+
+```bash
+git clone https://github.com/crendon213wp/master_stripo_file.git
+cd master_stripo_file
+```
+
+On Windows PowerShell:
+
+```powershell
+git clone https://github.com/crendon213wp/master_stripo_file.git
+Set-Location "master_stripo_file"
+```
+
+## 2. Create your private settings file
+
+The repository includes `.env.example`. It is a form. Your job is to make the real file.
+
+From the `master_stripo_file` directory, copy it to `.env`.
+
+### Windows PowerShell
+
+```powershell
+Copy-Item .env.example .env
+```
+
+### Windows Command Prompt
+
+```cmd
+copy .env.example .env
+```
+
+### macOS or Linux
+
+```bash
+cp .env.example .env
+```
+
+Open `.env`. Replace both placeholder values:
+
+```env
+STRIPO_PLUGIN_ID=your-real-stripo-plugin-id
+STRIPO_SECRET_KEY=your-real-stripo-secret-key
+```
+
+Use the credentials supplied by Stripo. Then save the file.
+
+Do not upload `.env` to GitHub. It contains private credentials. The `.gitignore` file is already set up to keep it out of Git. Commit `.env.example`, not `.env`.
+
+## 3. Install the dependencies
+
+Run this from the `master_stripo_file` directory:
+
+```bash
+npm install
+```
+
+This downloads the packages the app needs. One command. No ceremony.
+
+## 4. Start the app
+
+```bash
+npm start
+```
+
+Open this address in your browser:
+
+```text
+http://localhost:3000
+```
+
+Leave the terminal running while you use the editor.
+
+## 5. Check the connection
+
+The browser asks your local server for a Stripo token:
+
+```text
+GET http://localhost:3000/api/stripo/token
+```
+
+Your local server then asks Stripo to create the token. Your Stripo Secret Key stays on the server. That is where it belongs.
+
+The **New Project** button uses this endpoint:
+
+```text
+POST http://localhost:3000/api/projects
+```
+
+New projects are created in a sibling directory beside the cloned repository:
+
+```text
+<parent-directory>\<project-name>
+```
+
+They are not created inside `master_stripo_file`.
+
+## Save and reopen a project
+
+1. Click **New Project** to create a project and save the current design.
+2. Continue editing in Stripo.
+3. Click **Save** to write the current HTML and CSS to that project.
+4. Use the project selector and click **Open** to reopen a saved project later.
+
+Project content is stored in a `template.json` file inside the project directory. This is local filesystem storage, not a database or browser cache. Keep the project directory backed up if the work matters.
+
+## Troubleshooting
+
+### The server says credentials are missing
+
+Check these four things:
+
+1. The file is named `.env`.
+2. The file is inside `master_stripo_file`.
+3. `STRIPO_PLUGIN_ID` has a real Plugin ID.
+4. `STRIPO_SECRET_KEY` has a real Secret Key.
+
+Restart the server after changing `.env`.
+
+### Port 3000 is already being used
+
+Use another port in PowerShell:
+
+```powershell
+$env:PORT=3001
+npm start
+```
+
+Then open:
+
+```text
+http://localhost:3001
+```
+
+### The New Project button reports an error
+
+Make sure:
+
+- The server is running from `master_stripo_file`.
+- The parent directory is writable.
+- You are not trying to create a project with a name that already exists.
+
+## Keep the keys safe
+
+- Never put the Secret Key in browser code.
+- Never commit `.env`.
+- Use HTTPS, authentication, and rate limiting before making the app public.
+- This setup is designed for local development.
